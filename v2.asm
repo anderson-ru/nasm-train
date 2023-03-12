@@ -20,7 +20,7 @@ _start:
 	mov edx, len1
 	int 0x80
 
-	; read
+	; reading a number
 	mov eax, 3
 	mov ebx, 0
 	mov ecx, x
@@ -30,34 +30,33 @@ _start:
 	; convert to int
 	lea ebx, [x]
 	call str_to_int
-	mov [x], eax
+	mov [x], eax 
 
 	
-	mov eax, 12
-	mov ebx, [x]
-	mul ebx
+	mov eax, 12 ; eax = 12
+	mov ebx, [x]; ebx = x
+	mul ebx     ; eax = 12x
 	
 	
-	mov ebx, 2
-	add ebx, [x]
+	mov ebx, 2  ; ebx = 2
+	add ebx, [x]; ebx = 2 + x
 
-	xor edx, edx
-	div ebx
-	mov ecx, eax
-	; ecx -> 12x/(2+x)
+	xor edx, edx 
+	div ebx     ; 12x/(2+x)
+	mov ecx, eax; ecx -> 12x/(2+x)
 
 	
 	; 13x + 4 / (3 - 1)
-	mov eax, 13
-	mov ebx, [x]
-	mul ebx
-	add eax, 4
+	mov eax, 13 ; eax = 13
+	mov ebx, [x]; ebx = x
+	mul ebx     ; eax = 13x
+	add eax, 4  ; eax = 13x + 4
 	
-	mov ebx, 3
-	sub ebx, 1
+	mov ebx, 3  ; ebx = 3
+	sub ebx, 1  ; ebx = 3 - 1
 	
-	div ebx
-	add ecx, eax
+	div ebx     ; eac = 13x + 4 / ( 3 - 1)
+	add ecx, eax; ecx = (13x+4)/(3-1) + 12x/(2+x)
 	mov [y], ecx
 
 	; Out "y = " and y itself
@@ -95,17 +94,17 @@ str_to_int:
 	xor eax, eax 
 	.next_char:
 	movzx ecx, byte [ebx] 
-	inc ebx ; увеличиваем указатель
-	cmp ecx, '0' ; выход из цикла если значение меньше
+	inc ebx 
+	cmp ecx, '0' 
 	jb .done
-	cmp ecx, '9' ; выход из цикла если значение больше
+	cmp ecx, '9' 
 	ja .done
-	sub ecx, '0' ; преобразуем в число
-	imul eax, 10  ; умножаем на 10
-	add eax, ecx ; добавляем цифру к результату
-	jmp .next_char ; повторяем до конца строки
+	sub ecx, '0' 
+	imul eax, 10  
+	add eax, ecx 
+	jmp .next_char 
 .done:
-	ret ; возврат управления
+	ret 
  
 int_to_str:
 	add esi, 9
@@ -113,11 +112,11 @@ int_to_str:
 	mov ebx, 10         
 .next_digit:
 	xor edx, edx         
-	div ebx      ; делим на 10       
-	add dl, '0'    ;преобразуем в цифру      
-	dec esi       ; уменьшаем указатель      
+	div ebx     
+	add dl, '0'        
+	dec esi      
 	mov [esi], dl 
-	test eax, eax   ;проверяем остались ли цифры         
-	jnz .next_digit   ; если не закончились продолжаем цикл  
+	test eax, eax        
+	jnz .next_digit    
 	mov eax, esi 
 	ret
